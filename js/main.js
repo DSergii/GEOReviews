@@ -1,23 +1,66 @@
-var myMap;
+window.onload = function(){
+    var myMap;
+    var coords = {
+        lat: '',
+        lon: ''
+    }
+    // determine user location
+    /*function myPosition(){
 
-// Дождёмся загрузки API и готовности DOM.
-ymaps.ready(init);
+        var coords = [];
 
-function init () {
-    // Создание экземпляра карты и его привязка к контейнеру с
-    // заданным id ("map").
-    myMap = new ymaps.Map('map', {
-        // При инициализации карты обязательно нужно указать
-        // её центр и коэффициент масштабирования.
-        center: [55.76, 37.64], // Москва
-        zoom: 10
-    }, {
-        searchControlProvider: 'yandex#search'
-    });
+        var options = {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
+        };
 
-    /*document.getElementById('destroyButton').onclick = function () {
-        // Для уничтожения используется метод destroy.
-        myMap.destroy();
-    };*/
+        function success(position) {
 
+            coords.lat = position.coords.latitude.toFixed(2);
+            coords.lon = position.coords.longitude.toFixed(2);
+ 
+        }
+
+        function error(error){
+            console.log('Code: ' + error.code + ' ' + error.message);
+        }
+
+        navigator.geolocation.getCurrentPosition(success, error, options);
+
+    }
+    myPosition();*/
+
+    ymaps.ready(init);
+
+    function init () {
+
+        myMap = new ymaps.Map('map', {
+            center: [49.98, 36.25], // Харьков
+            zoom: 13
+        }, {
+            searchControlProvider: 'yandex#search'
+        });
+
+        myMap.events.add('click', function (e) {
+            var coords = e.get('coords');
+            console.log(coords);
+            /*if (!myMap.balloon.isOpen()) {
+                var coords = e.get('coords');
+                myMap.balloon.open(coords, {
+                    contentHeader:'Событие!',
+                    contentBody:'<p>Кто-то щелкнул по карте.</p>' +
+                        '<p>Координаты щелчка: ' + [
+                        coords[0].toPrecision(6),
+                        coords[1].toPrecision(6)
+                        ].join(', ') + '</p>',
+                    contentFooter:'<sup>Щелкните еще раз</sup>'
+                });
+            }
+            else {
+                myMap.balloon.close();
+            }*/
+        });
+    }
+    
 }
