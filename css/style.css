@@ -7,3 +7,17 @@
 html, body{
 	height: 100%;
 }
+.hold-input{
+	overflow: hidden;
+	margin-bottom: 15px;
+}
+.hold-input input[type="text"]{
+	width: 100%;
+	padding: 5px 10px;
+	border-radius: 12px;
+	border: 1px solid #ccc;
+}
+.hold-input input[type="text"]:focus{
+	outline: none;
+	outline: 0;
+}

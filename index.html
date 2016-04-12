@@ -3,9 +3,12 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
         <title>GeoReviews</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
         <link rel="stylesheet" href="css/style.css">
         <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
         <!--<script type="text/javascript" src="js/server.js"></script>-->
+        <script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
         <script type="text/javascript" src="js/main.js"></script>
         <!--<script type="text/javascript" src="js/jquery.main.js"></script>-->
     </head>
@@ -13,6 +16,38 @@
 	<div id="map">
 		
 	</div>
-    
+    <div class="modal fade" id="geo" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Modal title</h4>
+                </div>
+                <form action="" id="feadback">
+                    <fieldset>
+                        <div class="modal-body">
+                            <div class="hold-form">
+                                <div class="hold-input form-group">
+                                    <label for="">Ваше имя</label>
+                                    <input type="text" name="name">
+                                </div>
+                                <div class="hold-input form-group">
+                                    <label for="">Название заведения</label>
+                                    <input type="text" name="place">
+                                </div>
+                                <div class="hold-input form-group">
+                                    <label for="">Отзыв</label>
+                                    <textarea class="form-control" name="comment" id=""></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="submitBtn" class="btn btn-primary">Сохранить</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
