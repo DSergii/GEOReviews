@@ -21,3 +21,7 @@ html, body{
 	outline: none;
 	outline: 0;
 }
+.hold-reviews{
+	height: 160px;
+	overflow-y: auto; 
+}

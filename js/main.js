@@ -1,11 +1,26 @@
 window.onload = function(){
     var myMap;
+    var saveData = {
+        'review': {
+            'coords': {
+                'x': 0,
+                'y': 0
+            },
+            'address': '',
+            'name': '',
+            'place': '',
+            'text': '',
+            'date': ''
+        }
+    }
+    
+    // determine user location
+    /*
     var coords = {
         lat: '',
         lon: ''
     }
-    // determine user location
-    /*function myPosition(){
+    function myPosition(){
 
         var coords = [];
 
@@ -46,30 +61,26 @@ window.onload = function(){
 
         myMap.events.add('click', function (e) {
             var coords = e.get('coords');
-            //console.log(e.get('target'));
+
             mw.modal('show');
 
             createPoint(coords[0].toFixed(6), coords[1].toFixed(6));
-            //getAddress(coords[0].toFixed(3), coords[1].toFixed(3));
-            /*if (!myMap.balloon.isOpen()) {
-                var coords = e.get('coords');
-                myMap.balloon.open(coords, {
-                    contentHeader:'Событие!',
-                    contentBody:'<p>Кто-то щелкнул по карте.</p>' +
-                        '<p>Координаты щелчка: ' + [
-                        coords[0].toPrecision(6),
-                        coords[1].toPrecision(6)
-                        ].join(', ') + '</p>',
-                    contentFooter:'<sup>Щелкните еще раз</sup>'
-                });
-            }
-            else {
-                myMap.balloon.close();
-            }*/
+
         });
 
         function createPoint(lat, lon) {
-            console.log(lat, lon);
+
+            ymaps.geocode([lat,lon])
+                .then(function(data){
+                    var street = data.geoObjects.get(0);
+                    var name = street.properties.get('name');
+
+                    saveData.review.coords.x = lat;
+                    saveData.review.coords.y = lon;
+                    saveData.review.address = name;
+
+                });
+
             myGeoObject = new ymaps.GeoObject({
                 // Описание геометрии.
                 geometry: {
@@ -115,13 +126,16 @@ window.onload = function(){
         }
 
         var btn = document.getElementById('submitBtn');
-        var form = document.getElementById('feadback');
+        var form = $('#feadback');
+        var box = document.getElementsByClassName('list')[0];
 
         btn.addEventListener('click', sendComment);
 
         function sendComment() {
-
-            var data = {
+            var name = document.getElementById('name');
+            var text = document.getElementById('place'); 
+            var comm = document.getElementById('comment');
+            /*var data = {
                 "op": "add",
                 "review": {
                     "coords": {"x": 55.76048396289834, "y": 37.58335174560545},
@@ -131,35 +145,53 @@ window.onload = function(){
                     "text": "Кругом зомби!!!!",
                     "date": "2016.04.09 22:32:00"
                 }
-            }
+            }*/
+
+            saveData.op = 'add';
+            saveData.review.name = name.value;
+            saveData.review.place = text.value;
+            saveData.review.text = comm.value;
+            saveData.review.date = new Date();
 
             var xhr = new XMLHttpRequest();
 
-
-
-            xhr.open('POST', 'http://localhost:3000/', true);
-            //xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.open('POST', 'http://localhost:3100/', true);
 
             xhr.onload = function() {
                 console.log(xhr.response);
             }
+            var ser = form.serialize();
 
-            xhr.send(data);
+            xhr.send(JSON.stringify(saveData));
 
-            /*$('#feadback').on('submit', function(e){
-                e.preventDefault();
-                console.log(this);
-                $.ajax({
-                    type: 'POST',
-                    url: 'some url',
-                    dataType: 'json',
-                    data: $(this).serialize(),
-                    success: function(data){
-                        console.log(data);
-                    }
-                })
-            });*/
 
+        }
+
+        getData();
+        
+        function getData() {
+            var xhr = new XMLHttpRequest();
+
+
+            xhr.open('POST', 'http://localhost:3100/', true);
+
+
+            xhr.onload = function() {
+                var data = JSON.parse(xhr.response);
+                console.log(xhr.response);
+                if(data){
+                    console.log(data[saveData.review.address]);
+                    var li = document.createElement('li');
+                    li.innerHtml = data.address;
+                    box.appendChild(li);
+                }
+            }
+
+            var data = {
+                op: "all"
+            }
+
+            xhr.send(JSON.stringify(data));
         }
     }
     

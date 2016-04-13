@@ -7,7 +7,6 @@ var assert = require('assert'),
 
         parsePost(request).then(function(post) {
             var parsed = JSON.parse(post);
-
             assert.equal(typeof parsed.op, 'string');
 
             switch (parsed.op.toLowerCase()) {
@@ -64,7 +63,7 @@ var assert = require('assert'),
         });
     });
 
-server.listen(3000, 'localhost');
+server.listen(3100, 'localhost');
 
 function parsePost(req) {
     return new Promise(function(resolve) {
