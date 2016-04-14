@@ -25,3 +25,11 @@ html, body{
 	height: 160px;
 	overflow-y: auto; 
 }
+.list{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.list li{
+	margin-bottom: 5px;
+}

@@ -57,7 +57,28 @@ window.onload = function(){
             zoom: 13
         }, {
             searchControlProvider: 'yandex#search'
-        });
+        }),
+            clusterer = new ymaps.Clusterer({
+
+            preset: 'islands#invertedVioletClusterIcons',
+
+            groupByCoordinates: false,
+
+            clusterDisableClickZoom: true,
+            clusterHideIconOnBalloonOpen: false,
+            geoObjectHideIconOnBalloonOpen: false
+        }),
+            getPointData = function (index) {
+                return {
+                    balloonContentBody: 'Место <strong> ' + index + '</strong>',
+                    clusterCaption: 'Отзыв <strong>' + index + '</strong>'
+                };
+        },
+            getPointOptions = function () {
+                return {
+                    preset: 'islands#dotIcon'
+                }
+        };
 
         myMap.events.add('click', function (e) {
             var coords = e.get('coords');
@@ -100,29 +121,8 @@ window.onload = function(){
                 draggable: true
             });
 
-            myMap.geoObjects
-                .add(myGeoObject);
+            myMap.geoObjects.add(myGeoObject);
 
-            
-            var myClusterer = new ymaps.Clusterer();
-            myClusterer.add(myGeoObject);
-            myMap.geoObjects.add(myClusterer);
-
-        }
-
-        function getAddress(lat, lon) {
-
-            var aaa = ymaps.geocode([lat, lon]);
-            console.log(aaa);
-            var xhr = new XMLHttpRequest();
-
-            xhr.open('GET', 'https://geocode-maps.yandex.ru/1.x/?format=json&geocode=' + lat + ',' + lon, true);
-
-            xhr.onload = function() {
-                //console.log(xhr.response);
-            }
-
-            xhr.send();
         }
 
         var btn = document.getElementById('submitBtn');
@@ -135,17 +135,6 @@ window.onload = function(){
             var name = document.getElementById('name');
             var text = document.getElementById('place'); 
             var comm = document.getElementById('comment');
-            /*var data = {
-                "op": "add",
-                "review": {
-                    "coords": {"x": 55.76048396289834, "y": 37.58335174560545},
-                    "address": "Россия, Москва, Большая Грузинская улица, 8с36",
-                    "name": "Сергей",
-                    "place": "Шоколадница",
-                    "text": "Кругом зомби!!!!",
-                    "date": "2016.04.09 22:32:00"
-                }
-            }*/
 
             saveData.op = 'add';
             saveData.review.name = name.value;
@@ -167,23 +156,36 @@ window.onload = function(){
 
         }
 
-        getData();
-        
         function getData() {
             var xhr = new XMLHttpRequest();
 
-
             xhr.open('POST', 'http://localhost:3100/', true);
-
 
             xhr.onload = function() {
                 var data = JSON.parse(xhr.response);
                 console.log(xhr.response);
+                var point = [],
+                    clust = [],
+                    count = 0;
+
                 if(data){
-                    console.log(data[saveData.review.address]);
-                    var li = document.createElement('li');
-                    li.innerHtml = data.address;
-                    box.appendChild(li);
+                    
+                    for (var i in data){
+                        
+                        point[count] = [data[i][0].coords.x, data[i][0].coords.y];
+
+                        clust[count] = new ymaps.Placemark(point[count], getPointData(count), getPointOptions());
+                        count++;
+                        
+                        var li = document.createElement('li');
+                        li.innerHTML = data[i][0].address;
+                        box.appendChild(li);
+                        
+                    }
+
+                    clusterer.add(clust);
+                    myMap.geoObjects.add(clusterer);
+                    
                 }
             }
 
@@ -193,6 +195,9 @@ window.onload = function(){
 
             xhr.send(JSON.stringify(data));
         }
+
+        getData();
+        
     }
     
 }
